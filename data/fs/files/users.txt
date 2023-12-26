@@ -1,0 +1,4 @@
+[
+    {"name":"Guido","photo":"https://images.com","email":"guido@gmail.com","id":1},
+    {"name":"Guille","photo":"https://images.com","email":"guille@yahoo.com","id":"a17edd7fc0e3ae01efc92863"}
+]

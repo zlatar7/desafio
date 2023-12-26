@@ -1,0 +1,5 @@
+[
+    {"title":"Camisa","photo":"https://image.com","price":18500,"stock":5,"id":1},
+    {"title":"Jean","photo":"https://image.com","price":29900,"stock":4,"id":"e547044a3fefeba9b22e25a8"},
+    {"title":"Jean","photo":"https://image.com","price":29900,"stock":4,"id":"ad9c09c9e0bec2308cf625f6"}
+]

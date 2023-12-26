@@ -1,4 +1,5 @@
 import { promises } from 'fs';
+import crypto from "crypto"
 
 class ProductManager{
   constructor (path) {
@@ -18,33 +19,16 @@ class ProductManager{
 
               const contenido = await promises.readFile(this.path, "utf-8")
               const info = JSON.parse(contenido)
-  
-              //Asiganción del ID al objeto (Array con productos existentes)
 
-              if (info.length > 0) {
-                  const ultimoElemento = info[info.length -1];
-                  const id = ultimoElemento.id + 1;
-                  const objetoConId = {...objeto, id};
+              const id = crypto.randomBytes(12).toString("hex");
+              const objetoConId = {...objeto, id};
 
-                  //Se agrega el objeto al array 
-                  const arrayCompleto = JSON.stringify([...info, objetoConId]);
+            
+              const arrayCompleto = JSON.stringify([...info, objetoConId]);
   
               await promises.writeFile(this.path, arrayCompleto)
 
               return `Se ha agregado el producto, y su nuevo ID es: ${id}`
-                  
-              } else {
-
-                  //Asiganción del ID al objeto (si el Array de productos está vacío)
-                  const id = 1
-                  const objetoConId = {...objeto, id} 
-              
-                  const arrayCompleto = JSON.stringify([...info, objetoConId])
-                  
-                  await promises.writeFile(this.path, arrayCompleto)
-              
-                  return `Se ha agregado el producto, y su nuevo ID es: ${id}`
-              }
 
           } else {
               return 'Complete todos los campos'
@@ -65,7 +49,7 @@ class ProductManager{
           if(elementoEncontrado) {
               return elementoEncontrado
           } else {
-              return 'No se ha encontrado ningún elemento con ese ID'
+              return null
           }
 
 
@@ -85,16 +69,35 @@ class ProductManager{
           console.log(error)
       }
   }
+  
+  async destroy(numId){
+    try {
+
+        const contenido = await promises.readFile(this.path, "utf-8");
+        const info = JSON.parse(contenido);
+
+        const elemento = info.find(elemento => elemento.id == numId);
+
+            if(elemento){
+            
+            // Obtengo un array con todos los elementos excepto el elemento con el ID ingresado
+                const nuevoArray = info.filter(elemento => elemento.id != numId)
+                
+                await promises.writeFile(this.path, JSON.stringify(nuevoArray))
+                
+                return 'Elemento eliminado'
+
+            }else{
+
+                return `No hay elementos con el ID ingresado`
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
 }
 
-const productos1 = new ProductManager('data/products.txt')
+const product = new ProductManager('data/fs/files/products.txt')
 
-productos1.create({
-  title: "Jean",
-  photo: "https://image.com",
-  price: 29900,
-  stock: 4,
-});
-
-productos1.read().then((response)=>console.log(response));
-productos1.readOne(2).then((response)=>console.log(response));
+export default product
