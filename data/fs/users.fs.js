@@ -1,11 +1,30 @@
 import { promises } from 'fs';
+import fs from 'fs'
 import crypto from 'crypto'
 
 class UserManager{
-  constructor (path) {
-      this.path = path,
-      this.product = "[]"
-    }
+
+    init() {
+        try {
+          const exists = fs.existsSync(this.path);
+          
+          if (!exists) {
+            const data = JSON.stringify([], null, 2);
+            fs.writeFileSync(this.path, data);
+
+          } else {
+            this.users = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+          }
+        } catch (error) {
+            return error.message;
+        }
+      }
+
+    constructor (path) {
+        this.path = path || 'data/fs/files/users.txt',
+        this.users = "[]",
+        this.init();
+      }
 
   async create(objeto){
       try {

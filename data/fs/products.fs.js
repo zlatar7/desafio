@@ -1,11 +1,30 @@
 import { promises } from 'fs';
+import fs from 'fs'
 import crypto from "crypto"
 
 class ProductManager{
-  constructor (path) {
-      this.path = path,
-      this.product = "[]"
-    }
+    
+    
+    init() {
+        try {
+            const exists = fs.existsSync(this.path);
+          if (!exists) {
+            const data = JSON.stringify([], null, 2);
+            fs.writeFileSync(this.path, data);
+
+          } else {
+            this.products = JSON.parse(fs.readFileSync(path, "utf-8"));
+          }
+        } catch (error) {
+            return error.message;
+        }
+      }
+
+    constructor (path) {
+        this.path = path || 'data/fs/files/products.txt',
+        this.products = "[]",
+        this.init();
+      }
 
   async create(objeto){
       try {
@@ -14,7 +33,6 @@ class ProductManager{
           const price = objeto.hasOwnProperty('price')
           const stock = objeto.hasOwnProperty('stock')
           
-
           if (title && photo && price && stock) {
 
               const contenido = await promises.readFile(this.path, "utf-8")
@@ -23,7 +41,6 @@ class ProductManager{
               const id = crypto.randomBytes(12).toString("hex");
               const objetoConId = {...objeto, id};
 
-            
               const arrayCompleto = JSON.stringify([...info, objetoConId]);
   
               await promises.writeFile(this.path, arrayCompleto)
