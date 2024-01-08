@@ -35,7 +35,7 @@ class OrderManagers {
 
       return `Se ha agregadola orden, y su ID es: ${id}`;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
   async read() {
@@ -44,15 +44,15 @@ class OrderManagers {
       const info = JSON.parse(contenido);
       return info;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
-  async readOne(uid) {
+  async readOne(id) {
     try {
       const contenido = await promises.readFile(this.path, "utf-8");
       const info = JSON.parse(contenido);
 
-      const elementosEncontrados = info.filter(order => order.uid === uid);
+      const elementosEncontrados = info.filter(order => order.uid === id);
 
       if (elementosEncontrados.length > 0) {
         return elementosEncontrados;
@@ -60,7 +60,7 @@ class OrderManagers {
         return null;
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
   async update(oid, state, quantity) {
@@ -83,19 +83,19 @@ class OrderManagers {
         return null;
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
-  async destroy(oid) {
+  async destroy(id) {
     try {
       const contenido = await promises.readFile(this.path, "utf-8");
       const info = JSON.parse(contenido);
 
-      const orderSelected = info.find((order) => order.id == oid);
+      const orderSelected = info.find((order) => order.id == id);
 
       if (orderSelected != undefined) {
         // Obtengo un array con todas las orders excepto la order con el ID ingresado
-        const nuevoArray = info.filter((elemento) => elemento.id != oid);
+        const nuevoArray = info.filter((elemento) => elemento.id != id);
 
         await promises.writeFile(this.path, JSON.stringify(nuevoArray));
 
@@ -104,7 +104,7 @@ class OrderManagers {
         return `No hay elementos con el ID ingresado`;
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 }

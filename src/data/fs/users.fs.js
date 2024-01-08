@@ -24,13 +24,13 @@ class UserManager {
       this.init();
   }
 
-  async create(objeto) {
+  async create(data) {
     try {
       const contenido = await promises.readFile(this.path, "utf-8");
       const info = JSON.parse(contenido);
 
       const id = crypto.randomBytes(12).toString("hex");
-      const objetoConId = { ...objeto, id };
+      const objetoConId = { ...data, id };
 
       const arrayCompleto = JSON.stringify([...info, objetoConId]);
 
@@ -38,16 +38,16 @@ class UserManager {
 
       return `Se ha agregado el producto, y su nuevo ID es: ${id}`;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 
-  async readOne(uid) {
+  async readOne(id) {
     try {
       const contenido = await promises.readFile(this.path, "utf-8");
       const info = JSON.parse(contenido);
 
-      const elementoEncontrado = info.find((elemento) => elemento.id == uid);
+      const elementoEncontrado = info.find((elemento) => elemento.id == id);
 
       if (elementoEncontrado) {
         return elementoEncontrado;
@@ -55,7 +55,7 @@ class UserManager {
         return null;
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 
@@ -66,20 +66,20 @@ class UserManager {
 
       return info;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 
-  async destroy(uid) {
+  async destroy(id) {
     try {
       const contenido = await promises.readFile(this.path, "utf-8");
       const info = JSON.parse(contenido);
 
-      const elemento = info.find((elemento) => elemento.id == uid);
+      const elemento = info.find((elemento) => elemento.id == id);
 
       if (elemento != undefined) {
         // Obtengo un array con todos los elementos excepto el elemento con el ID ingresado
-        const nuevoArray = info.filter((elemento) => elemento.id != uid);
+        const nuevoArray = info.filter((elemento) => elemento.id != id);
 
         await promises.writeFile(this.path, JSON.stringify(nuevoArray));
 
@@ -88,7 +88,7 @@ class UserManager {
         return `No hay elementos con el ID ingresado`;
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 
@@ -112,7 +112,7 @@ class UserManager {
         return "El producto no existe";
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 }

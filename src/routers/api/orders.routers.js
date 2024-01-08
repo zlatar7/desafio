@@ -5,15 +5,6 @@ import propsOrdersUpdate from "../../middlewares/propsOrdersUpdate.js";
 
 const ordersRouters = Router();
 
-ordersRouters.post("/", propsOrders, async (req, res, next) => {
-  try {
-    const object = req.body;
-    const obj = await order.create(object);
-    res.status(200).json({ success: true, response: obj });
-  } catch (error) {
-    return next(error);
-  }
-});
 
 ordersRouters.get("/", async (req, res, next) => {
   try {
@@ -32,7 +23,7 @@ ordersRouters.get("/:uid", async (req, res, next) => {
   try {
     const uid = req.params.uid;
     const obj = await order.readOne(uid);
-
+    
     if (obj !== null) {
       res.status(200).json({ succes: true, response: obj });
     } else {
@@ -40,6 +31,16 @@ ordersRouters.get("/:uid", async (req, res, next) => {
     }
   } catch (error) {
     next(error);
+  }
+});
+
+ordersRouters.post("/", propsOrders, async (req, res, next) => {
+  try {
+    const object = req.body;
+    const obj = await order.create(object);
+    res.status(200).json({ success: true, response: obj });
+  } catch (error) {
+    return next(error);
   }
 });
 

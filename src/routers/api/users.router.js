@@ -43,6 +43,22 @@ usersRouter.post("/", propsUsers, async (req, res, next) => {
   }
 });
 
+usersRouter.put("/:uid", propsUsers, async (req, res, next) => {
+  try {
+    const uid = req.params.uid;
+    const usuario = req.body;
+    const obj = await user.update(uid, usuario);
+    
+    if (obj == `El usuario con el ID: ${uid} ha sido actualizado`) {
+      res.status(200).json({ success: true, response: obj });
+    } else {
+      res.status(404).json({ success: false, message: obj });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 usersRouter.delete("/:uid", async (req, res, next) => {
   try {
     const id = req.params.uid;
@@ -55,21 +71,6 @@ usersRouter.delete("/:uid", async (req, res, next) => {
     }
   } catch (error) {
     return next(error);
-  }
-});
-usersRouter.put("/:uid", async (req, res, next) => {
-  try {
-    const uid = req.params.uid;
-    const usuario = req.body;
-    const obj = await user.update(uid, usuario);
-
-    if (obj == `El usuario con el ID: ${uid} ha sido actualizado`) {
-      res.status(200).json({ success: true, response: obj });
-    } else {
-      res.status(404).json({ success: false, message: obj });
-    }
-  } catch (error) {
-    next(error);
   }
 });
 

@@ -43,6 +43,22 @@ productsRouter.post("/", propsProducts, async (req, res, next) => {
   }
 });
 
+productsRouter.put("/:pid",propsProducts, async (req, res, next) => {
+  try {
+    const pid = req.params.pid;
+    const prod = req.body;
+    const obj = await product.update(pid, prod);
+    
+    if (obj == `El producto con el ID: ${pid} ha sido actualizado`) {
+      res.status(200).json({ success: true, response: obj });
+    } else {
+      res.status(404).json({ success: false, message: obj });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 productsRouter.delete("/:pid", async (req, res) => {
   try {
     const prod = req.params.pid;
@@ -55,22 +71,6 @@ productsRouter.delete("/:pid", async (req, res) => {
     }
   } catch (error) {
     return next(error);
-  }
-});
-
-productsRouter.put("/:pid", async (req, res, next) => {
-  try {
-    const pid = req.params.pid;
-    const product = req.body;
-    const obj = await product.update(pid, product);
-
-    if (obj == `El producto con el ID: ${pid} ha sido actualizado`) {
-      res.status(200).json({ success: true, response: obj });
-    } else {
-      res.status(404).json({ success: false, message: obj });
-    }
-  } catch (error) {
-    next(error);
   }
 });
 
