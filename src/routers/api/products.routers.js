@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Types } from "mongoose";
 // import product from "../../data/fs/products.fs.js";
 import { product } from "../../data/mongo/manager.mongo.js";
 import propsProducts from "../../middlewares/propsProducts.js";
@@ -28,9 +29,18 @@ productsRouter.get("/", async (req, res, next) => {
 productsRouter.get("/:pid", async (req, res, next) => {
   try {
     const { pid } = req.params;
-    const obj = await product.readOne(pid);
+    const isValidID = Types.ObjectId.isValid(pid);
 
-    return res.json({ statusCode: 200, response: obj });
+    if (isValidID) {
+      const obj = await product.readOne(pid);
+
+      return res.json({ statusCode: 200, response: obj });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID del producto no existe en la base de datos",
+      });
+    }
   } catch (error) {
     return next(error);
   }
@@ -49,10 +59,19 @@ productsRouter.post("/", propsProducts, async (req, res, next) => {
 productsRouter.put("/:pid", propsProducts, async (req, res, next) => {
   try {
     const { pid } = req.params;
-    const prod = req.body;
-    const obj = await product.update(pid, prod);
+    const isValidID = Types.ObjectId.isValid(pid);
 
-    return res.json({ statusCode: 200, response: obj });
+    if (isValidID) {
+      const prod = req.body;
+      const obj = await product.update(pid, prod);
+
+      return res.json({ statusCode: 200, response: obj });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID del producto no existe en la base de datos",
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -61,9 +80,18 @@ productsRouter.put("/:pid", propsProducts, async (req, res, next) => {
 productsRouter.delete("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    const obj = await product.destroy(pid);
+    const isValidID = Types.ObjectId.isValid(pid);
 
-    return res.json({ statusCode: 200, response: obj });
+    if (isValidID) {
+      const obj = await product.destroy(pid);
+
+      return res.json({ statusCode: 200, response: obj });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID del producto no existe en la base de datos",
+      });
+    }
   } catch (error) {
     return next(error);
   }

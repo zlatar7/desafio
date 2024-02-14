@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Types } from "mongoose";
 // import order from "../../data/fs/orders.fs.js";
 import { order } from "../../data/mongo/manager.mongo.js";
 import propsOrders from "../../middlewares/propsOrders.js";
@@ -9,8 +10,18 @@ const ordersRouters = Router();
 ordersRouters.get("/total/:uid", async (req, res, next) => {
   try {
     const { uid } = req.params;
-    const reportBill = await order.report(uid);
-    return res.json({ statusCode: 200, response: reportBill });
+    const isValidID = Types.ObjectId.isValid(uid);
+
+    if (isValidID) {
+      const reportBill = await order.report(uid);
+
+      return res.json({ statusCode: 200, response: reportBill });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID de la orden no existe en la base de datos",
+      });
+    }
   } catch (error) {
     return next(error);
   }
@@ -39,9 +50,18 @@ ordersRouters.get("/", async (req, res, next) => {
 ordersRouters.get("/:oid", async (req, res, next) => {
   try {
     const { oid } = req.params;
-    const obj = await order.readOne(oid);
+    const isValidID = Types.ObjectId.isValid(oid);
 
-    return res.json({ statusCode: 200, response: obj });
+    if (isValidID) {
+      const obj = await order.readOne(oid);
+
+      return res.json({ statusCode: 200, response: obj });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID de la orden no existe en la base de datos",
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -59,11 +79,20 @@ ordersRouters.post("/", propsOrders, async (req, res, next) => {
 
 ordersRouters.put("/:oid", propsOrdersUpdate, async (req, res, next) => {
   try {
-    const oid = req.params.oid;
+    const { oid } = req.params;
     const data = req.body;
-    const one = await order.update(oid, data);
+    const isValidID = Types.ObjectId.isValid(oid);
 
-    res.json({ statusCode: 200, response: one });
+    if (isValidID) {
+      const one = await order.update(oid, data);
+
+      return res.json({ statusCode: 200, response: one });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID de la orden no existe en la base de datos",
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -71,10 +100,19 @@ ordersRouters.put("/:oid", propsOrdersUpdate, async (req, res, next) => {
 
 ordersRouters.delete("/:oid", async (req, res, next) => {
   try {
-    const oid = req.params.oid;
-    const one = await order.destroy(oid);
+    const { oid } = req.params;
+    const isValidID = Types.ObjectId.isValid(oid);
 
-    return res.json({ statusCode: 200, response: one });
+    if (isValidID) {
+      const one = await order.destroy(oid);
+
+      return res.json({ statusCode: 200, response: one });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID de la orden no existe en la base de datos",
+      });
+    }
   } catch (error) {
     next(error);
   }

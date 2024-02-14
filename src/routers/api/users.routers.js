@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Types } from "mongoose";
 // import user from "../../data/fs/users.fs.js";
 import { user } from "../../data/mongo/manager.mongo.js";
 import propsUsers from "../../middlewares/propsUsers.js";
@@ -29,10 +30,18 @@ usersRouter.get("/", async (req, res, next) => {
 
 usersRouter.get("/:uid", async (req, res, next) => {
   try {
-    const id = req.params.uid;
-    const obj = await user.readOne(id);
-
-    return res.json({ statusCode: 200, response: obj });
+    const { uid } = req.params;
+    const isValidID = Types.ObjectId.isValid(uid);
+    console.log(isValidID);
+    if (isValidID) {
+      const obj = await user.readOne(uid);
+      return res.json({ statusCode: 200, response: obj });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID del ususario no existe en la base de datos",
+      });
+    }
   } catch (error) {
     return next(error);
   }
@@ -51,10 +60,19 @@ usersRouter.post("/", propsUsers, async (req, res, next) => {
 usersRouter.put("/:uid", propsUsers, async (req, res, next) => {
   try {
     const { uid } = req.params;
-    const data = req.body;
-    const one = await user.update(uid, data);
+    const isValidID = Types.ObjectId.isValid(uid);
 
-    return res.json({ statusCode: 200, response: one });
+    if (isValidID) {
+      const data = req.body;
+      const one = await user.update(uid, data);
+
+      return res.json({ statusCode: 200, response: one });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID no existe en la base de datos",
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -62,10 +80,19 @@ usersRouter.put("/:uid", propsUsers, async (req, res, next) => {
 
 usersRouter.delete("/:uid", async (req, res, next) => {
   try {
-    const id = req.params.uid;
-    const obj = await user.destroy(id);
+    const { uid } = req.params;
 
-    return res.json({ statusCode: 200, response: obj });
+    const isValidID = Types.ObjectId.isValid(uid);
+    if (isValidID) {
+      const obj = await user.destroy(uid);
+
+      return res.json({ statusCode: 200, response: obj });
+    } else {
+      res.json({
+        statusCode: 404,
+        response: "El ID no existe en la base de datos",
+      });
+    }
   } catch (error) {
     return next(error);
   }
