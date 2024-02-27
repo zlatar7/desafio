@@ -6,7 +6,7 @@ import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import morgan from "morgan";
 import socketUtils from "./src/utils/socket.utils.js";
-import dbConnection from "./src/utils/db.js";
+import dbConnection from "./src/utils/db.utils.js";
 import cookieParser from "cookie-parser"
 import expressSession from "express-session";
 import sessionFileStore from "session-file-store";

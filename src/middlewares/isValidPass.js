@@ -1,5 +1,5 @@
 import { user } from "../data/mongo/manager.mongo.js";
-import isValidPassUtils from "../utils/isValidPass.js";
+import isValidPassUtils from "../utils/isValidPass.utils.js";
 
 async function isValidPass(req, res, next) {
   try {

@@ -3,6 +3,8 @@ import { Types } from "mongoose";
 // import product from "../../data/fs/products.fs.js";
 import { product } from "../../data/mongo/manager.mongo.js";
 import propsProducts from "../../middlewares/propsProducts.js";
+import isAdmin from "../../middlewares/isAdmin.js";
+import passCallback from "../../middlewares/passCallback.js";
 
 const productsRouter = Router();
 
@@ -46,15 +48,20 @@ productsRouter.get("/:pid", async (req, res, next) => {
   }
 });
 
-productsRouter.post("/", propsProducts, async (req, res, next) => {
-  try {
-    const prod = req.body;
-    const obj = await product.create(prod);
-    res.json({ statusCode: 201, response: obj });
-  } catch (error) {
-    return next(error);
+productsRouter.post(
+  "/",
+  passCallback("jwt"),
+  isAdmin,
+  async (req, res, next) => {
+    try {
+      const data = req.body;
+      const response = await product.create(data);
+      return res.json({ statusCode: 201, response });
+    } catch (error) {
+      return next(error);
+    }
   }
-});
+);
 
 productsRouter.put("/:pid", propsProducts, async (req, res, next) => {
   try {
