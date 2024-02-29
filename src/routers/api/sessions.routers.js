@@ -76,7 +76,7 @@ sessionsRouter.post(
 );
 
 //GOOGLE-CALLBACK
-sessionsRouter.post(
+sessionsRouter.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
@@ -93,6 +93,12 @@ sessionsRouter.post(
       return next(error);
     }
   }
+);
+
+//GITHUB
+sessionsRouter.post(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] })
 );
 
 //GITHUB-CALLBACK

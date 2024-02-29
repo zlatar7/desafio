@@ -11,18 +11,18 @@ const {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_SECRET, GITHUB_CLIE
 passport.use(
   "register",
   new LocalStrategy(
-    { passReqToCallback: true, usernameField: "email" },
+    { passReqToCallback: true, usuarionameField: "email" },
     async (req, email, password, done) => {
       try {
-        let one = await user.readByEmail(email);
+        let one = await usuario.readByEmail(email);
         if (!one) {
           let data = req.body;
           data.password = createHash(password);
-          let usuario = await user.create(data);
+          let usuario = await usuario.create(data);
           return done(null, usuario);
         } else {
           return done(null, false, {
-            message: "User already exists",
+            message: "usuario already exists",
             statusCode: 400,
           });
         }
@@ -36,10 +36,10 @@ passport.use(
 passport.use(
   "login",
   new LocalStrategy(
-    { passReqToCallback: true, usernameField: "email" },
+    { passReqToCallback: true, usuarionameField: "email" },
     async (req, email, password, done) => {
       try {
-        const usuario = await user.readByEmail(email);
+        const usuario = await usuario.readByEmail(email);
         if (usuario && verifyHash(password, usuario.password)) {
           const token = createToken({ email, role: usuario.role });
           req.token = token;
@@ -67,7 +67,7 @@ passport.use(
       try {
         let usuario = await user.readByEmail(profile.id + "@gmail.com");
         if (!usuario) {
-          user = {
+          usuario = {
             email: profile.id + "@gmail.com",
             name: profile.name.givenName,
             lastName: profile.name.familyName,
@@ -78,7 +78,7 @@ passport.use(
         }
         req.session.email = usuario.email;
         req.session.role = usuario.role;
-        return done(null, user);
+        return done(null, usuario);
       } catch (error) {
         return done(error);
       }
@@ -90,23 +90,24 @@ passport.use(
   "github",
   new GithubStrategy(
     {
-      passReqToCallback: true,
       clientID: GITHUB_CLIENT_ID,
       clientSecret: GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:8080/api/sessions/github/callback",
+      callbackURL: "http://localhost:8000/api/sessions/github/callback",
+      passReqToCallback: true
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
-        let usuario = await user.readByEmail(profile.id + "@github.com");
+        let usuario = await usuario.readByEmail(profile.id + "@github.com");
         if (!usuario) {
           usuario = {
             email: profile.id + "@github.com",
-            name: profile.username,
+            name: profile.usuarioname,
             photo: profile._json.avatar_url,
             password: createHash(profile.id),
           };
-          usuario = await user.create(usuario);
+          usuario = await usuario.create(usuario);
         }
+        console.log(usuario)
         req.session.email = usuario.email;
         req.session.role = usuario.role;
         return done(null, usuario);
@@ -128,7 +129,7 @@ passport.use(
     },
     async (payload, done) => {
       try {
-        const usuario = await user.readByEmail(payload.email);
+        const usuario = await usuario.readByEmail(payload.email);
         if (usuario) {
           usuario.password = null;
           return done(null, usuario);

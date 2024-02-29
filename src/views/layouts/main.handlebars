@@ -10,25 +10,16 @@
     <nav class="navbar navbar-expand-md w-100" style="background-color: #01084bea; position: fixed; z-index: 1;">
       <div class="container-fluid">
         <a class="fs-5 m-1 me-3" href="/"><img src="/images/logo.png" height="65" alt="logo"/></a>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav">
-            {{! <a class="btn btn-light fs-5 m-1" href="/real">Real</a> }}
-            {{#if logged}}
-              <a class="btn btn-light m-1" href="/orders" id="ordersButton">CART</a>
-            {{/if}}
-            {{#if admin}}
-              <a class="btn btn-light m-1" href="/form" id="formButton">FORM</a>
-            {{/if}}
-            {{#if button}}
-              <span class="btn btn-light m-1" id="signout">SIGN OUT</span>
-            {{/if}}
-            {{#if notLogged}}
-              <a class="btn m-1 btn-light" id="loginButton" href="/auth/login">LOGIN</a>
-              <a class="btn m-1 btn-light" id="registerButton" href="/auth/register">REGISTER</a>
-            {{/if}}
-          </div>
+         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="btn btn-light fs-5 m-1" href="/form" id="formButton">FORM</a>
+          <a class="btn btn-light fs-5 m-1" href="/orders" id="ordersButton">CART</a>
+          <a class="btn btn-light fs-5 m-1" href="/auth/register" id="registerButton">REGISTER</a>
+          <a class="btn btn-light fs-5 m-1" href="/auth/login" id="loginButton">LOGIN</a>
+          <span class="btn btn-secondary fs-5 m-1" id="signout">SIGN OUT</span>
         </div>
       </div>
+    </div>
     </nav>
     {{{body}}}
     <footer class="w-100" style="background-color: #01084bea; margin-top: 2em;">

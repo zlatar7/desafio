@@ -1,17 +1,16 @@
-const google = document.querySelector("#google");
+const google = document.getElementById("google");
 google.addEventListener("click", async () => {
   try {
-    console.log("funciona")
     const opts = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     };
     let response = await fetch("/api/sessions/google", opts);
     response = await response.json();
-    alert(response)
+    alert(response.message)
   } catch (error) {
-    console.log(error.message)
     alert(error.message);
+    console.log(error)
   }
 });
 
@@ -24,7 +23,8 @@ github.addEventListener("click", async () => {
     };
     let response = await fetch("/api/sessions/github", opts);
     response = await response.json();
-    alert(response.message);
+    console.log(response);
+    //alert(response.message);
   } catch (error) {
     alert(error.message);
   }
